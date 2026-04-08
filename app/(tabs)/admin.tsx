@@ -22,10 +22,9 @@ export default function AdminScreen() {
           onChangeText={setPin}
           placeholder="PIN"
         />
-        <TouchableOpacity style={styles.btn} onPress={() => { if(pin === '1234') setUnlocked(true); else alert('Wrong PIN') }}>
+        <TouchableOpacity style={styles.btn} onPress={() => { if(pin === '8197') setUnlocked(true); else alert('Wrong PIN') }}>
           <Text style={styles.btnText}>Unlock</Text>
         </TouchableOpacity>
-        <Text style={{ marginTop: 20, color: '#aaa' }}>Default PIN is 1234</Text>
       </View>
     );
   }
