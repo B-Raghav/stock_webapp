@@ -40,6 +40,7 @@ export default function AdminScreen() {
           <View style={styles.row}>
             <Image source={{ uri: item.imageUri }} style={styles.image} />
             <View style={styles.info}>
+              <Text style={styles.itemCodeLabel}>Model: {item.itemCode || 'No Code'}</Text>
               <Text style={styles.costPrice}>Buying: ₹ {item.costPrice}</Text>
               <Text style={styles.sellingPrice}>Selling: ₹ {item.sellingPrice}</Text>
               <Text style={styles.date}>{new Date(item.createdAt).toLocaleDateString()}</Text>
@@ -50,7 +51,7 @@ export default function AdminScreen() {
           </View>
         )}
       />
-      <Link href="/modal" asChild>
+      <Link href="/model" asChild>
         <TouchableOpacity style={styles.fab}>
           <Plus color="#fff" size={32} />
         </TouchableOpacity>
@@ -69,6 +70,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 12, borderRadius: 12, overflow: 'hidden', padding: 8, elevation: 1 },
   image: { width: 80, height: 80, borderRadius: 8 },
   info: { flex: 1, paddingHorizontal: 12, justifyContent: 'center' },
+  itemCodeLabel: { fontWeight: 'bold', fontSize: 16, marginBottom: 4, color: '#333' },
   costPrice: { color: '#e74c3c', fontSize: 14, marginBottom: 4 },
   sellingPrice: { color: '#2ecc71', fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
   date: { color: '#aaa', fontSize: 12 },

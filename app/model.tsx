@@ -41,10 +41,15 @@ export default function AddSareeModal() {
       alert("Please fill all fields and select an image.");
       return;
     }
+    
+    // Automatically add 5% to whatever number they type for buying price!
+    const parsedCost = parseFloat(costPrice);
+    const finalCostWithMargin = isNaN(parsedCost) ? costPrice : Math.round(parsedCost * 1.05).toString();
+
     await addSaree({
       imageUri,
       itemCode,
-      costPrice,
+      costPrice: finalCostWithMargin,
       sellingPrice
     });
     router.back();
