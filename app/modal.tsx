@@ -9,6 +9,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 
 export default function AddSareeModal() {
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [itemCode, setItemCode] = useState('');
   const [costPrice, setCostPrice] = useState('');
   const [sellingPrice, setSellingPrice] = useState('');
   const { addSaree } = useSarees();
@@ -36,12 +37,13 @@ export default function AddSareeModal() {
   };
 
   const handleSave = async () => {
-    if (!imageUri || !costPrice || !sellingPrice) {
+    if (!imageUri || !itemCode || !costPrice || !sellingPrice) {
       alert("Please fill all fields and select an image.");
       return;
     }
     await addSaree({
       imageUri,
+      itemCode,
       costPrice,
       sellingPrice
     });
@@ -61,6 +63,14 @@ export default function AddSareeModal() {
           </View>
         )}
       </TouchableOpacity>
+
+      <Text style={styles.label}>Saree Code Number</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g. SK-1042"
+        value={itemCode}
+        onChangeText={setItemCode}
+      />
 
       <Text style={styles.label}>Buying Price (₹)</Text>
       <TextInput

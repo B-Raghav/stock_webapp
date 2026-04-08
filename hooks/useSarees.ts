@@ -6,6 +6,7 @@ import { collection, onSnapshot, addDoc, deleteDoc, doc, query, orderBy } from '
 export type Saree = {
   id: string;
   imageUri: string;
+  itemCode?: string;
   costPrice: string;
   sellingPrice: string;
   createdAt: number;
@@ -40,6 +41,7 @@ export function useSarees() {
       // 3. Save directly to Firebase Database (base64 image bypasses storage)
       await addDoc(collection(db, "sarees"), {
         imageUri: saree.imageUri,
+        itemCode: saree.itemCode || '',
         costPrice: saree.costPrice,
         sellingPrice: saree.sellingPrice,
         createdAt: Date.now(),

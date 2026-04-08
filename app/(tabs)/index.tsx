@@ -1,42 +1,58 @@
 import { useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { useSarees } from '../../hooks/useSarees';
-import { X } from 'lucide-react-native';
+import { X, Search } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
 
 export default function GalleryScreen() {
   const { sarees, loading } = useSarees();
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   if (loading) return <View style={styles.center}><Text>Loading...</Text></View>;
 
-  if (sarees.length === 0) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.emptyText}>No sarees in collection yet.</Text>
-      </View>
-    );
-  }
+  const filteredSarees = sarees.filter(s => 
+    !searchQuery || (s.itemCode && s.itemCode.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={sarees}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={{ padding: 8 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity 
-            style={styles.card} 
-            activeOpacity={0.8}
-            onPress={() => setSelectedImage(item.imageUri)}
-          >
-            <Image source={{ uri: item.imageUri }} style={styles.image} resizeMode="cover" />
-            <Text style={styles.price}>₹ {item.sellingPrice}</Text>
-          </TouchableOpacity>
-        )}
-      />
+      <View style={styles.searchBarContainer}>
+        <Search color="#999" size={20} style={{ marginRight: 8 }} />
+        <TextInput 
+          style={styles.searchInput}
+          placeholder="Search by Code..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+
+      {filteredSarees.length === 0 ? (
+        <View style={styles.center}>
+          <Text style={styles.emptyText}>No sarees found.</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filteredSarees}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          contentContainerStyle={{ padding: 8 }}
+          renderItem={({ item }) => (
+            <TouchableOpacity 
+              style={styles.card} 
+              activeOpacity={0.8}
+              onPress={() => setSelectedImage(item.imageUri)}
+            >
+              <Image source={{ uri: item.imageUri }} style={styles.image} resizeMode="cover" />
+              <View style={styles.cardFooter}>
+                <Text style={styles.codeText}>{item.itemCode}</Text>
+                <Text style={styles.price}>₹ {item.sellingPrice}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      )}
 
       {/* Full Screen Image Viewer Modal */}
       <Modal visible={!!selectedImage} transparent={true} animationType="fade">
@@ -57,6 +73,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f9f9f9' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyText: { color: '#666', fontSize: 16 },
+  searchBarContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#e2e2e2', margin: 16, paddingHorizontal: 12, borderRadius: 12, height: 48 },
+  searchInput: { flex: 1, fontSize: 16 },
   card: {
     width: width / 2 - 24, // 2 columns with padding
     margin: 8,
@@ -69,8 +87,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  image: { width: '100%', height: 220 },
-  price: { fontSize: 18, fontWeight: '700', color: '#FF2A54', margin: 12, textAlign: 'center' },
+  image: { width: '100%', height: 200 },
+  cardFooter: { padding: 8, alignItems: 'center' },
+  codeText: { fontSize: 12, color: '#888', fontWeight: 'bold', marginBottom: 4 },
+  price: { fontSize: 18, fontWeight: '700', color: '#FF2A54' },
   
   fullScreenModal: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
   fullScreenImage: { width: '100%', height: '80%' },
