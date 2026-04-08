@@ -13,7 +13,7 @@ export default function GalleryScreen() {
   if (loading) return <View style={styles.center}><Text>Loading...</Text></View>;
 
   const filteredSarees = sarees.filter(s => 
-    !searchQuery || (s.itemCode && s.itemCode.toLowerCase().includes(searchQuery.toLowerCase()))
+    !searchQuery || (s.sellingCode && s.sellingCode.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
@@ -22,7 +22,7 @@ export default function GalleryScreen() {
         <Search color="#999" size={20} style={{ marginRight: 8 }} />
         <TextInput 
           style={styles.searchInput}
-          placeholder="Search by Code..."
+          placeholder="Search Public Code..."
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
@@ -46,7 +46,7 @@ export default function GalleryScreen() {
             >
               <Image source={{ uri: item.imageUri }} style={styles.image} resizeMode="cover" />
               <View style={styles.cardFooter}>
-                <Text style={styles.codeText}>{item.itemCode}</Text>
+                <Text style={styles.codeText}>{item.sellingCode || 'No Code'}</Text>
                 <Text style={styles.price}>₹ {item.sellingPrice}</Text>
               </View>
             </TouchableOpacity>

@@ -40,7 +40,8 @@ export default function AdminScreen() {
           <View style={styles.row}>
             <Image source={{ uri: item.imageUri }} style={styles.image} />
             <View style={styles.info}>
-              <Text style={styles.itemCodeLabel}>Model: {item.itemCode || 'No Code'}</Text>
+              <Text style={styles.itemCodeLabel}>Buy Code: {item.buyingCode || 'None'}</Text>
+              <Text style={styles.itemCodeLabel}>Sell Code: {item.sellingCode || 'None'}</Text>
               <Text style={styles.costPrice}>Buying: ₹ {item.costPrice}</Text>
               <Text style={styles.sellingPrice}>Selling: ₹ {item.sellingPrice}</Text>
               <Text style={styles.date}>{new Date(item.createdAt).toLocaleDateString()}</Text>

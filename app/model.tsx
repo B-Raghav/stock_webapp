@@ -9,7 +9,8 @@ import * as ImageManipulator from 'expo-image-manipulator';
 
 export default function AddSareeModal() {
   const [imageUri, setImageUri] = useState<string | null>(null);
-  const [itemCode, setItemCode] = useState('');
+  const [buyingCode, setBuyingCode] = useState('');
+  const [sellingCode, setSellingCode] = useState('');
   const [costPrice, setCostPrice] = useState('');
   const [sellingPrice, setSellingPrice] = useState('');
   const { addSaree } = useSarees();
@@ -23,7 +24,6 @@ export default function AddSareeModal() {
     });
 
     if (!result.canceled) {
-      // Compress the image drastically to easily bypass the database 1MB limit for Web!
       const manipResult = await ImageManipulator.manipulateAsync(
         result.assets[0].uri,
         [{ resize: { width: 500 } }],
@@ -37,7 +37,7 @@ export default function AddSareeModal() {
   };
 
   const handleSave = async () => {
-    if (!imageUri || !itemCode || !costPrice || !sellingPrice) {
+    if (!imageUri || !buyingCode || !sellingCode || !costPrice || !sellingPrice) {
       alert("Please fill all fields and select an image.");
       return;
     }
@@ -48,7 +48,8 @@ export default function AddSareeModal() {
 
     await addSaree({
       imageUri,
-      itemCode,
+      buyingCode,
+      sellingCode,
       costPrice: finalCostWithMargin,
       sellingPrice
     });
@@ -69,12 +70,20 @@ export default function AddSareeModal() {
         )}
       </TouchableOpacity>
 
-      <Text style={styles.label}>Saree Code Number</Text>
+      <Text style={styles.label}>Buying Code (Secret)</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g. BC-100"
+        value={buyingCode}
+        onChangeText={setBuyingCode}
+      />
+
+      <Text style={styles.label}>Selling Code (Public)</Text>
       <TextInput
         style={styles.input}
         placeholder="e.g. SK-1042"
-        value={itemCode}
-        onChangeText={setItemCode}
+        value={sellingCode}
+        onChangeText={setSellingCode}
       />
 
       <Text style={styles.label}>Buying Price (₹)</Text>

@@ -6,7 +6,8 @@ import { collection, onSnapshot, addDoc, deleteDoc, doc, query, orderBy } from '
 export type Saree = {
   id: string;
   imageUri: string;
-  itemCode?: string;
+  buyingCode?: string;
+  sellingCode?: string;
   costPrice: string;
   sellingPrice: string;
   createdAt: number;
@@ -16,7 +17,6 @@ export function useSarees() {
   const [sarees, setSarees] = useState<Saree[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Instantly listen for changes across all devices
   useFocusEffect(
     useCallback(() => {
       const q = query(collection(db, "sarees"), orderBy("createdAt", "desc"));
@@ -38,10 +38,10 @@ export function useSarees() {
 
   const addSaree = async (saree: Omit<Saree, 'id' | 'createdAt'>) => {
     try {
-      // 3. Save directly to Firebase Database (base64 image bypasses storage)
       await addDoc(collection(db, "sarees"), {
         imageUri: saree.imageUri,
-        itemCode: saree.itemCode || '',
+        buyingCode: saree.buyingCode || '',
+        sellingCode: saree.sellingCode || '',
         costPrice: saree.costPrice,
         sellingPrice: saree.sellingPrice,
         createdAt: Date.now(),
