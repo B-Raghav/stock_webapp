@@ -9,7 +9,7 @@ export default function TabLayout() {
         options={{
           title: 'Gallery',
           tabBarIcon: ({ color }) => <ShoppingBag color={color} size={24} />,
-          headerTitle: 'Saree Collection',
+          headerTitle: 'Riva Silks Collection',
         }}
       />
       <Tabs.Screen
@@ -17,7 +17,7 @@ export default function TabLayout() {
         options={{
           title: 'Admin',
           tabBarIcon: ({ color }) => <Lock color={color} size={24} />,
-          headerTitle: 'Stock Management',
+          headerTitle: 'Riva Silks Admin',
         }}
       />
     </Tabs>
