@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { useSarees } from '../../hooks/useSarees';
 import { Link } from 'expo-router';
-import { Plus, Trash2, Lock } from 'lucide-react-native';
+import { Plus, Trash2, Lock, Edit2 } from 'lucide-react-native';
 
 export default function AdminScreen() {
   const { sarees, loading, removeSaree } = useSarees();
@@ -45,9 +45,16 @@ export default function AdminScreen() {
               <Text style={styles.sellingPrice}>Selling: ₹ {item.sellingPrice}</Text>
               <Text style={styles.date}>{new Date(item.createdAt).toLocaleDateString()}</Text>
             </View>
-            <TouchableOpacity onPress={() => removeSaree(item.id)} style={styles.deleteBtn}>
-              <Trash2 color="#ff4444" size={24} />
-            </TouchableOpacity>
+            <View style={styles.actionRow}>
+              <Link href={{ pathname: "/model", params: { editId: item.id } }} asChild>
+                <TouchableOpacity style={styles.actionBtn}>
+                  <Edit2 color="#3498db" size={24} />
+                </TouchableOpacity>
+              </Link>
+              <TouchableOpacity onPress={() => removeSaree(item.id)} style={styles.actionBtn}>
+                <Trash2 color="#ff4444" size={24} />
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       />
@@ -74,6 +81,7 @@ const styles = StyleSheet.create({
   costPrice: { color: '#e74c3c', fontSize: 14, marginBottom: 4 },
   sellingPrice: { color: '#2ecc71', fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
   date: { color: '#aaa', fontSize: 12 },
-  deleteBtn: { padding: 12, justifyContent: 'center' },
+  actionRow: { justifyContent: 'space-around', paddingHorizontal: 10 },
+  actionBtn: { padding: 8, justifyContent: 'center', alignItems: 'center' },
   fab: { position: 'absolute', right: 24, bottom: 24, width: 64, height: 64, borderRadius: 32, backgroundColor: '#FF2A54', justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOffset: {height:4,width:0}, shadowOpacity: 0.3, shadowRadius: 4, elevation: 5 }
 });

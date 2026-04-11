@@ -1,20 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView, Platform } from 'react-native';
 import { useSarees } from '../hooks/useSarees';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { ImagePlus } from 'lucide-react-native';
 
 import * as ImageManipulator from 'expo-image-manipulator';
 
 export default function AddSareeModal() {
+  const { editId } = useLocalSearchParams();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [buyingCode, setBuyingCode] = useState('');
   const [sellingCode, setSellingCode] = useState('');
   const [costPrice, setCostPrice] = useState('');
   const [sellingPrice, setSellingPrice] = useState('');
-  const { addSaree } = useSarees();
+  
+  const { sarees, addSaree, updateSaree } = useSarees();
   const router = useRouter();
+
+  useEffect(() => {
+    if (editId && sarees.length > 0) {
+      const target = sarees.find(s => s.id === editId);
+      if (target && !imageUri) { // Prevent overwriting if user has already picked a new image
+        setImageUri(target.imageUri);
+        setBuyingCode(target.buyingCode || '');
+        setSellingCode(target.sellingCode || '');
+        setCostPrice(target.costPrice);
+        setSellingPrice(target.sellingPrice);
+      }
+    }
+  }, [editId, sarees]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -42,22 +57,37 @@ export default function AddSareeModal() {
       return;
     }
     
-    // Automatically add 5% to whatever number they type for buying price!
-    const parsedCost = parseFloat(costPrice);
-    const finalCostWithMargin = isNaN(parsedCost) ? costPrice : Math.round(parsedCost * 1.05).toString();
+    // Auto 5% margin is exclusively applied to brand new uploads. Edits strictly use the inputted value.
+    let finalCost = costPrice;
+    if (!editId) {
+      const parsedCost = parseFloat(costPrice);
+      finalCost = isNaN(parsedCost) ? costPrice : Math.round(parsedCost * 1.05).toString();
+    }
 
-    await addSaree({
-      imageUri,
-      buyingCode,
-      sellingCode,
-      costPrice: finalCostWithMargin,
-      sellingPrice
-    });
+    if (editId) {
+      await updateSaree(editId as string, {
+        imageUri,
+        buyingCode,
+        sellingCode,
+        costPrice: finalCost,
+        sellingPrice
+      });
+    } else {
+      await addSaree({
+        imageUri,
+        buyingCode,
+        sellingCode,
+        costPrice: finalCost,
+        sellingPrice
+      });
+    }
     router.back();
   };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 20 }}>
+      {editId && <Text style={{fontSize: 22, fontWeight: '900', color: '#3498db', marginBottom: 20}}>Editing Mode</Text>}
+      
       <Text style={styles.label}>Saree Photo</Text>
       <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
         {imageUri ? (
@@ -104,8 +134,8 @@ export default function AddSareeModal() {
         onChangeText={setSellingPrice}
       />
 
-      <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-        <Text style={styles.saveBtnText}>Save to Inventory</Text>
+      <TouchableOpacity style={[styles.saveBtn, editId && {backgroundColor: '#3498db'}]} onPress={handleSave}>
+        <Text style={styles.saveBtnText}>{editId ? "Update Inventory" : "Save to Inventory"}</Text>
       </TouchableOpacity>
       
       {Platform.OS === 'ios' && <View style={{ height: 40 }} />}

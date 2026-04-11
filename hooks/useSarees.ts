@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { db } from '../firebaseConfig';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, deleteDoc, doc, query, orderBy, updateDoc } from 'firebase/firestore';
 
 export type Saree = {
   id: string;
@@ -60,6 +60,15 @@ export function useSarees() {
     }
   };
 
-  return { sarees, loading, addSaree, removeSaree };
+  const updateSaree = async (id: string, updates: Partial<Saree>) => {
+    try {
+      await updateDoc(doc(db, "sarees", id), updates);
+    } catch (e) {
+      console.error("Failed to update saree:", e);
+      alert("Failed to update details.");
+    }
+  };
+
+  return { sarees, loading, addSaree, removeSaree, updateSaree };
 }
 
