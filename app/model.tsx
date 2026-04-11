@@ -57,12 +57,8 @@ export default function AddSareeModal() {
       return;
     }
     
-    // Auto 5% margin is exclusively applied to brand new uploads. Edits strictly use the inputted value.
-    let finalCost = costPrice;
-    if (!editId) {
-      const parsedCost = parseFloat(costPrice);
-      finalCost = isNaN(parsedCost) ? costPrice : Math.round(parsedCost * 1.05).toString();
-    }
+    // User requested to remove the 5% auto margin, we now store the exact number they type
+    const finalCost = costPrice;
 
     if (editId) {
       await updateSaree(editId as string, {

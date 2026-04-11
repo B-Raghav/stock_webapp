@@ -5,7 +5,7 @@ import { Link } from 'expo-router';
 import { Plus, Trash2, Lock, Edit2 } from 'lucide-react-native';
 
 export default function AdminScreen() {
-  const { sarees, loading, removeSaree } = useSarees();
+  const { sarees, loading, removeSaree, revertAllMargins } = useSarees();
   const [pin, setPin] = useState('');
   const [unlocked, setUnlocked] = useState(false);
 

@@ -69,6 +69,25 @@ export function useSarees() {
     }
   };
 
-  return { sarees, loading, addSaree, removeSaree, updateSaree };
+  const revertAllMargins = async () => {
+    try {
+      let count = 0;
+      for (const saree of sarees) {
+        if (saree.costPrice) {
+          const cp = parseFloat(saree.costPrice);
+          if (!isNaN(cp) && cp > 0) {
+            const newCost = Math.round(cp / 1.05);
+            await updateDoc(doc(db, "sarees", saree.id), { costPrice: newCost.toString() });
+            count++;
+          }
+        }
+      }
+      if (typeof window !== 'undefined') alert(`Margin reverted recursively on ${count} items.`);
+    } catch(e) {
+      console.error("Failed margin revert", e);
+    }
+  };
+
+  return { sarees, loading, addSaree, removeSaree, updateSaree, revertAllMargins };
 }
 
