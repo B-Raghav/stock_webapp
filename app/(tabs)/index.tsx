@@ -74,7 +74,7 @@ export default function GalleryScreen() {
               horizontal
               pagingEnabled
               showsHorizontalScrollIndicator={false}
-              style={{ flex: 1, width }}
+              style={{ width: '100%', height: '100%' }}
               keyExtractor={(uri, i) => uri + i}
               renderItem={({ item }) => (
                 <View style={{ width, height: '100%', justifyContent: 'center', alignItems: 'center' }}>
@@ -85,7 +85,9 @@ export default function GalleryScreen() {
           )}
           
           {selectedSaree && selectedSaree.imageUri2 && (
-            <Text style={{position: 'absolute', bottom: 50, color: 'rgba(255,255,255,0.5)', fontSize: 16}}>Swipe to see more</Text>
+            <View style={{position: 'absolute', bottom: 50, width: '100%', alignItems: 'center'}}>
+              <Text style={{color: 'rgba(255,255,255,0.5)', fontSize: 16}}>Swipe to see more</Text>
+            </View>
           )}
         </View>
       </Modal>
@@ -118,7 +120,7 @@ const styles = StyleSheet.create({
   badgeOverlay: { position: 'absolute', top: 8, right: 8, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
   badgeText: { color: '#fff', fontSize: 10, fontWeight: 'bold' },
   
-  fullScreenModal: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
+  fullScreenModal: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center' },
   fullScreenImage: { width: '100%', height: '80%' },
   closeBtn: { position: 'absolute', top: 50, right: 20, zIndex: 10, padding: 8, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20 }
 });
