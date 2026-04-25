@@ -8,7 +8,7 @@ const { width } = Dimensions.get('window');
 export default function GalleryScreen() {
   const { sarees, loading } = useSarees();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedSaree, setSelectedSaree] = useState<any>(null);
 
   if (loading) return <View style={styles.center}><Text>Loading...</Text></View>;
 
@@ -42,9 +42,16 @@ export default function GalleryScreen() {
             <TouchableOpacity 
               style={styles.card} 
               activeOpacity={0.8}
-              onPress={() => setSelectedImage(item.imageUri)}
+              onPress={() => setSelectedSaree(item)}
             >
-              <Image source={{ uri: item.imageUri }} style={styles.image} resizeMode="cover" />
+              <View>
+                <Image source={{ uri: item.imageUri }} style={styles.image} resizeMode="cover" />
+                {item.imageUri2 && (
+                  <View style={styles.badgeOverlay}>
+                    <Text style={styles.badgeText}>2 Photos</Text>
+                  </View>
+                )}
+              </View>
               <View style={styles.cardFooter}>
                 <Text style={styles.codeText}>{item.sellingCode || 'No Code'}</Text>
                 <Text style={styles.price}>₹ {item.sellingPrice}</Text>
@@ -55,13 +62,29 @@ export default function GalleryScreen() {
       )}
 
       {/* Full Screen Image Viewer Modal */}
-      <Modal visible={!!selectedImage} transparent={true} animationType="fade">
+      <Modal visible={!!selectedSaree} transparent={true} animationType="fade">
         <View style={styles.fullScreenModal}>
-          <TouchableOpacity style={styles.closeBtn} onPress={() => setSelectedImage(null)}>
+          <TouchableOpacity style={styles.closeBtn} onPress={() => setSelectedSaree(null)}>
             <X color="#fff" size={32} />
           </TouchableOpacity>
-          {selectedImage && (
-            <Image source={{ uri: selectedImage }} style={styles.fullScreenImage} resizeMode="contain" />
+          
+          {selectedSaree && (
+            <FlatList
+              data={[selectedSaree.imageUri, selectedSaree.imageUri2].filter(Boolean)}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(uri, i) => uri + i}
+              renderItem={({ item }) => (
+                <View style={{ width, height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                   <Image source={{ uri: item }} style={styles.fullScreenImage} resizeMode="contain" />
+                </View>
+              )}
+            />
+          )}
+          
+          {selectedSaree && selectedSaree.imageUri2 && (
+            <Text style={{position: 'absolute', bottom: 50, color: 'rgba(255,255,255,0.5)', fontSize: 16}}>Swipe to see more</Text>
           )}
         </View>
       </Modal>
@@ -91,6 +114,8 @@ const styles = StyleSheet.create({
   cardFooter: { padding: 8, alignItems: 'center' },
   codeText: { fontSize: 12, color: '#888', fontWeight: 'bold', marginBottom: 4 },
   price: { fontSize: 18, fontWeight: '700', color: '#FF2A54' },
+  badgeOverlay: { position: 'absolute', top: 8, right: 8, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
+  badgeText: { color: '#fff', fontSize: 10, fontWeight: 'bold' },
   
   fullScreenModal: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
   fullScreenImage: { width: '100%', height: '80%' },

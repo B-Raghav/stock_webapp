@@ -6,6 +6,7 @@ import { collection, onSnapshot, addDoc, deleteDoc, doc, query, orderBy, updateD
 export type Saree = {
   id: string;
   imageUri: string;
+  imageUri2?: string;
   buyingCode?: string;
   sellingCode?: string;
   costPrice: string;
@@ -40,6 +41,7 @@ export function useSarees() {
     try {
       await addDoc(collection(db, "sarees"), {
         imageUri: saree.imageUri,
+        imageUri2: saree.imageUri2 || null,
         buyingCode: saree.buyingCode || '',
         sellingCode: saree.sellingCode || '',
         costPrice: saree.costPrice,
