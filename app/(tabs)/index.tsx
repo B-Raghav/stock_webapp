@@ -74,6 +74,7 @@ export default function GalleryScreen() {
               horizontal
               pagingEnabled
               showsHorizontalScrollIndicator={false}
+              style={{ flex: 1, width }}
               keyExtractor={(uri, i) => uri + i}
               renderItem={({ item }) => (
                 <View style={{ width, height: '100%', justifyContent: 'center', alignItems: 'center' }}>
