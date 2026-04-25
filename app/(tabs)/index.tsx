@@ -3,7 +3,7 @@ import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity, 
 import { useSarees } from '../../hooks/useSarees';
 import { X, Search } from 'lucide-react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function GalleryScreen() {
   const { sarees, loading } = useSarees();
@@ -69,24 +69,26 @@ export default function GalleryScreen() {
           </TouchableOpacity>
           
           {selectedSaree && (
-            <FlatList
-              data={[selectedSaree.imageUri, selectedSaree.imageUri2].filter(Boolean)}
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              style={{ width: '100%', height: '100%' }}
-              keyExtractor={(uri, i) => uri + i}
-              renderItem={({ item }) => (
-                <View style={{ width, height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                   <Image source={{ uri: item }} style={styles.fullScreenImage} resizeMode="contain" />
-                </View>
-              )}
-            />
+            <View style={{ width, height, position: 'absolute', top: 0, left: 0 }}>
+              <FlatList
+                data={[selectedSaree.imageUri, selectedSaree.imageUri2].filter(Boolean)}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                style={{ flex: 1 }}
+                keyExtractor={(uri, i) => uri + i}
+                renderItem={({ item }) => (
+                  <View style={{ width, height, justifyContent: 'center', alignItems: 'center' }}>
+                     <Image source={{ uri: item }} style={styles.fullScreenImage} resizeMode="contain" />
+                  </View>
+                )}
+              />
+            </View>
           )}
           
           {selectedSaree && selectedSaree.imageUri2 && (
-            <View style={{position: 'absolute', bottom: 50, width: '100%', alignItems: 'center'}}>
-              <Text style={{color: 'rgba(255,255,255,0.5)', fontSize: 16}}>Swipe to see more</Text>
+            <View style={{position: 'absolute', bottom: 50, width: '100%', alignItems: 'center', pointerEvents: 'none'}}>
+              <Text style={{color: 'rgba(255,255,255,0.8)', fontSize: 16, fontWeight: '700'}}>Swipe to see more</Text>
             </View>
           )}
         </View>
